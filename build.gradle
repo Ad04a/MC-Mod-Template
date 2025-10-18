@@ -216,3 +216,29 @@ tasks.register('cleanBuild') {
     dependsOn 'clean', 'build'
     group = 'custom'
 }
+
+var destination_folder = "SOME_ABSOLUTE_PATH_TO_THE_MODS_FOLDER_OF_MC_INSTNACE";
+
+tasks.register("deleteDistributionBuild") {
+    dependsOn 'cleanBuild'
+    doLast{
+        delete files(destination_folder + "\" + "${mod_id}-${mod_version}.jar")
+    }
+    group = 'DistributeBuildSteps'
+}
+
+
+tasks.register("copyBuildToDistribution", Copy){
+    dependsOn 'deleteDistributionBuild'
+
+    from 'build/libs'
+    into destination_folder
+
+    group = 'DistributeBuildSteps'
+}
+
+
+tasks.register('cleanDistributeBuild') {
+    dependsOn 'copyBuildToDistribution'
+    group = 'DistributeBuild'
+}
